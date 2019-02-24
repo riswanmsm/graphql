@@ -1,5 +1,5 @@
 {
-  "name": "graphql",
+  "name": "graphql-exp",
   "version": "1.0.0",
   "description": "graphQL testing app with mongo express",
   "main": "app.js",
@@ -19,8 +19,9 @@
   "homepage": "https://github.com/riswanmsm/graphql#readme",
   "dependencies": {
     "body-parser": "^1.18.3",
-    "eslint": "^5.14.1",
-    "express": "^4.16.4"
+    "express": "^4.16.4",
+    "express-graphql": "^0.7.1",
+    "graphql": "^14.1.1"
   },
   "devDependencies": {
     "nodemon": "^1.18.10"
