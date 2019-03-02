@@ -2,37 +2,67 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const graphQLHttp = require('express-graphql');
 const { buildSchema } = require('graphql');
+const uniqueId = require('uuid/v4');
 
 const app = express();
 
 app.use(bodyParser.json());
 
+let events = [];
+
 app.use('/api', graphQLHttp({
     schema: buildSchema(`
-        type rootQuery{
-            events: [String!]!
+
+        type Event{
+            _id: ID!
+            title: String!
+            description: String!
+            price: Float!
+            date: String!
         }
 
-        type rootMutation{
-            createEvent(name: String): String
+        input InputEvent{
+            title: String!
+            description: String!
+            price: Float!
+        }
+
+        type RootQuery{
+            events: [Event!]!
+        }
+
+        type RootMutation{
+            createEvent(inputEvent: InputEvent): Event
         }
 
         schema{
-            query: rootQuery
-            mutation: rootMutation
+            query: RootQuery
+            mutation: RootMutation
         }    
     `),
     rootValue: {
         events: () => {
-            return ["wedding", "Sports", "Press Meeting"];
+            return events;
         },
         createEvent: (args) => {
-            return args.name;
+            let event = {
+                _id: uniqueId(),
+                title: args.inputEvent.title,
+                description: args.inputEvent.description,
+                price: +args.inputEvent.price,
+                date: new Date().toISOString()
+            }
+            events.push(event);
+            return event;
         }
     },
     graphiql: true
 }));
 
-app.listen(8001, () => {
-    console.log("Server started on 8001");
+app.get('/test', (req, res, next) => {
+    res.sendFile(__dirname + '/test.html');
+});
+
+app.listen(8101, () => {
+    console.log("Server started on 8101");
 });
